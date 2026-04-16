@@ -8,7 +8,7 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-mono: var(--font-mono);
   --font-heading: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -49,6 +49,21 @@
 }
 
 :root {
+  /* render.io palette */
+  --bg: #fafaf7;
+  --surface: #ffffff;
+  --surface-2: #f4f3ee;
+  --surface-3: #ecebe4;
+  --line: #e6e4dc;
+  --line-2: #d8d5cb;
+  --ink: #1c1b18;
+  --ink-2: #454339;
+  --ink-3: #787567;
+  --ink-4: #a6a394;
+  --accent: #f26207;
+  --accent-2: #ffe9d6;
+  --ok: #2ea043;
+
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -120,6 +135,8 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    scrollbar-width: thin;
+    scrollbar-color: var(--line-2) transparent;
   }
   body {
     @apply bg-background text-foreground;
@@ -127,4 +144,20 @@
   html {
     @apply font-sans;
   }
+}
+
+/* Webkit custom scrollbars */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--line-2);
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ink-4);
 }
