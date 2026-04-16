@@ -1,7 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronLeft, ChevronRight, RotateCcw } from "lucide-react";
+import { ChevronLeft, ChevronRight, RotateCcw, Copy, Download } from "lucide-react";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import LivePreview from "@/components/LivePreview";
 
 type Tab = "preview" | "code" | "console";
@@ -18,6 +21,25 @@ const VIEWPORTS: Viewport[] = ["sm", "md", "lg", "full"];
 export default function PreviewPane({ code }: { code: string }) {
   const [tab, setTab] = useState<Tab>("preview");
   const [viewport, setViewport] = useState<Viewport>("full");
+
+  function handleCopy() {
+    navigator.clipboard.writeText(code).then(() => {
+      toast.success("Code copied to clipboard");
+    });
+  }
+
+  function handleDownload() {
+    const blob = new Blob([code], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "Component.tsx";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    toast.success("Downloaded Component.tsx");
+  }
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
@@ -38,6 +60,7 @@ export default function PreviewPane({ code }: { code: string }) {
             </button>
           ))}
         </div>
+
         {/* Viewport size toggle */}
         <div className="flex items-center gap-0.5">
           {VIEWPORTS.map((v) => (
@@ -54,6 +77,40 @@ export default function PreviewPane({ code }: { code: string }) {
             </button>
           ))}
         </div>
+
+        {/* Copy / Download — only when there's code */}
+        {code && (
+          <>
+            <div className="mx-1 h-4 w-px bg-[var(--line)]" />
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon-xs"
+                  onClick={handleCopy}
+                  className="text-[var(--ink-4)] hover:bg-[var(--surface-2)] hover:text-[var(--ink-2)]"
+                >
+                  <Copy className="!size-3.5" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">Copy code</TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon-xs"
+                  onClick={handleDownload}
+                  className="text-[var(--ink-4)] hover:bg-[var(--surface-2)] hover:text-[var(--ink-2)]"
+                >
+                  <Download className="!size-3.5" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">Download .tsx</TooltipContent>
+            </Tooltip>
+          </>
+        )}
       </div>
 
       {/* URL bar */}
@@ -92,11 +149,15 @@ export default function PreviewPane({ code }: { code: string }) {
           <span className="font-mono text-[11px] text-[var(--ink-4)]">connected</span>
         </div>
         <span className="text-[var(--line-2)]">│</span>
-        <span className="font-mono text-[11px] text-[var(--ink-4)]">page.tsx</span>
+        <span className="font-mono text-[11px] text-[var(--ink-4)]">
+          {code ? "App.tsx" : "page.tsx"}
+        </span>
         <span className="text-[var(--line-2)]">│</span>
-        <span className="font-mono text-[11px] text-[var(--ink-4)]">0 lines</span>
+        <span className="font-mono text-[11px] text-[var(--ink-4)]">
+          {code ? `${code.split("\n").length} lines` : "0 lines"}
+        </span>
         <span className="text-[var(--line-2)]">│</span>
-        <span className="font-mono text-[11px] text-[var(--ink-4)]">ready in 0.8s</span>
+        <span className="font-mono text-[11px] text-[var(--ink-4)]">ready</span>
       </div>
     </div>
   );

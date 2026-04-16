@@ -111,7 +111,7 @@ export default function PromptPane({ messages, streaming, send, stop, reset }: P
   }
 
   return (
-    <div className="flex w-[420px] shrink-0 flex-col bg-[var(--surface)]">
+    <div className="flex w-full flex-col bg-[var(--surface)]">
       {/* ── Header ─────────────────────────────────────────────────────────── */}
       <div className="flex h-9 shrink-0 items-center justify-between border-b border-[var(--line)] px-3">
         <div className="flex items-center gap-1.5">
