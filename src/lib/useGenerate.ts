@@ -11,14 +11,14 @@ interface UseGenerateReturn {
   currentCode: string;
   send: (prompt: string) => Promise<void>;
   stop: () => void;
+  reset: () => void;
 }
 
-/** Extract the last ```tsx ... ``` block from a string. */
+/** Extract the last complete ```tsx ... ``` block (requires closing fence). */
 function extractCode(text: string): string {
-  const matches = [...text.matchAll(/```tsx\s*([\s\S]*?)(?:```|$)/g)];
+  const matches = [...text.matchAll(/```tsx\s*([\s\S]*?)```/g)];
   if (matches.length === 0) return "";
-  const last = matches[matches.length - 1];
-  return last[1].trim();
+  return matches[matches.length - 1][1].trim();
 }
 
 export function useGenerate(): UseGenerateReturn {
@@ -29,6 +29,13 @@ export function useGenerate(): UseGenerateReturn {
 
   const stop = useCallback(() => {
     abortRef.current?.abort();
+  }, []);
+
+  const reset = useCallback(() => {
+    abortRef.current?.abort();
+    setMessages([]);
+    setCurrentCode("");
+    setStreaming(false);
   }, []);
 
   const send = useCallback(async (prompt: string) => {
@@ -132,5 +139,5 @@ export function useGenerate(): UseGenerateReturn {
     }
   }, [messages, streaming]);
 
-  return { messages, streaming, currentCode, send, stop };
+  return { messages, streaming, currentCode, send, stop, reset };
 }

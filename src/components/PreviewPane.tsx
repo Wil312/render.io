@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ChevronLeft, ChevronRight, RotateCcw } from "lucide-react";
+import LivePreview from "@/components/LivePreview";
 
 type Tab = "preview" | "code" | "console";
 type Viewport = "sm" | "md" | "lg" | "full";
@@ -14,7 +15,7 @@ const TABS: { id: Tab; label: string }[] = [
 
 const VIEWPORTS: Viewport[] = ["sm", "md", "lg", "full"];
 
-export default function PreviewPane() {
+export default function PreviewPane({ code }: { code: string }) {
   const [tab, setTab] = useState<Tab>("preview");
   const [viewport, setViewport] = useState<Viewport>("full");
 
@@ -72,10 +73,16 @@ export default function PreviewPane() {
       </div>
 
       {/* Stage area */}
-      <div className="flex flex-1 items-center justify-center overflow-auto bg-[var(--surface-2)] p-8">
-        <div className="w-full max-w-2xl rounded-lg border border-[var(--line)] bg-[var(--surface)] shadow-sm" style={{ aspectRatio: "16/9" }}>
-          {/* Preview placeholder — component renders here */}
-        </div>
+      <div className="relative flex flex-1 overflow-hidden bg-[var(--surface-2)]">
+        {code ? (
+          <LivePreview code={code} />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center">
+            <p className="select-none font-mono text-sm text-[var(--ink-4)]">
+              // Your component will render here. Describe it on the right →
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Status footer */}

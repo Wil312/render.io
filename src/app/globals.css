@@ -146,6 +146,21 @@
   }
 }
 
+/* Sandpack: fill container height and hide built-in error overlay */
+.sp-wrapper,
+.sp-layout,
+.sp-preview-container {
+  height: 100% !important;
+  min-height: 0 !important;
+}
+.sp-preview-iframe {
+  height: 100% !important;
+}
+/* We render our own compact error bar below the preview */
+.sp-overlay.sp-error {
+  display: none !important;
+}
+
 /* Webkit custom scrollbars */
 ::-webkit-scrollbar {
   width: 4px;
