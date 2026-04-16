@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
+import Providers from "@/components/Providers";
 import "./globals.css";
 
 const ibmPlexSans = IBM_Plex_Sans({
@@ -29,7 +30,9 @@ export default function RootLayout({
       lang="en"
       className={`${ibmPlexSans.variable} ${ibmPlexMono.variable} h-full antialiased`}
     >
-      <body className="h-full overflow-hidden">{children}</body>
+      <body className="h-full overflow-hidden">
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }

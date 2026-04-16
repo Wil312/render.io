@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Files, Search, GitBranch, Package, Database, Settings } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface NavItem {
   id: string;
@@ -27,32 +28,41 @@ export default function Rail() {
         {NAV_ITEMS.map(({ id, icon: Icon, label }) => {
           const isActive = active === id;
           return (
-            <button
-              key={id}
-              onClick={() => setActive(id)}
-              title={label}
-              className={`relative flex h-10 w-full items-center justify-center transition-colors ${
-                isActive
-                  ? "bg-[var(--accent-2)] text-[var(--accent)]"
-                  : "text-[var(--ink-3)] hover:bg-[var(--surface-2)] hover:text-[var(--ink-2)]"
-              }`}
-            >
-              {isActive && (
-                <span className="absolute inset-y-2 left-0 w-[2px] rounded-r-full bg-[var(--accent)]" />
-              )}
-              <Icon className="h-4 w-4" />
-            </button>
+            <Tooltip key={id}>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={() => setActive(id)}
+                  aria-label={label}
+                  className={`relative flex h-10 w-full items-center justify-center transition-colors ${
+                    isActive
+                      ? "bg-[var(--accent-2)] text-[var(--accent)]"
+                      : "text-[var(--ink-3)] hover:bg-[var(--surface-2)] hover:text-[var(--ink-2)]"
+                  }`}
+                >
+                  {isActive && (
+                    <span className="absolute inset-y-2 left-0 w-[2px] rounded-r-full bg-[var(--accent)]" />
+                  )}
+                  <Icon className="h-4 w-4" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="right">{label}</TooltipContent>
+            </Tooltip>
           );
         })}
       </nav>
 
       <div className="border-t border-[var(--line)] py-1">
-        <button
-          title="Settings"
-          className="flex h-10 w-full items-center justify-center text-[var(--ink-3)] transition-colors hover:bg-[var(--surface-2)] hover:text-[var(--ink-2)]"
-        >
-          <Settings className="h-4 w-4" />
-        </button>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              aria-label="Settings"
+              className="flex h-10 w-full items-center justify-center text-[var(--ink-3)] transition-colors hover:bg-[var(--surface-2)] hover:text-[var(--ink-2)]"
+            >
+              <Settings className="h-4 w-4" />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent side="right">Settings</TooltipContent>
+        </Tooltip>
       </div>
     </aside>
   );
