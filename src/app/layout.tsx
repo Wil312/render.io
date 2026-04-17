@@ -29,6 +29,7 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${ibmPlexSans.variable} ${ibmPlexMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
       <body className="h-full overflow-hidden">
         <Providers>{children}</Providers>
