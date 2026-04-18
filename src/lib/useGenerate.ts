@@ -42,20 +42,29 @@ function saveMessages(msgs: Message[]) {
 }
 
 export function useGenerate(): UseGenerateReturn {
-  const [messages, setMessages] = useState<Message[]>(loadMessages);
-
-  // Restore currentCode from the last complete assistant message on mount
-  const [currentCode, setCurrentCode] = useState<string>(() => {
-    const stored = loadMessages();
-    const last = [...stored].reverse().find((m) => m.role === "assistant");
-    return last ? extractCode(last.content) : "";
-  });
-
+  // Always initialise to empty so the server and client render identically.
+  // localStorage is only available in the browser, so we restore after mount.
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [currentCode, setCurrentCode] = useState<string>("");
   const [streaming, setStreaming] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
 
-  // Persist the thread to localStorage whenever it changes
+  // Restore persisted thread after hydration completes
   useEffect(() => {
+    const stored = loadMessages();
+    if (stored.length === 0) return;
+    setMessages(stored);
+    const last = [...stored].reverse().find((m) => m.role === "assistant");
+    if (last) {
+      const code = extractCode(last.content);
+      if (code) setCurrentCode(code);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Persist thread to localStorage on every update, skipping the initial empty render
+  const hydratedRef = useRef(false);
+  useEffect(() => {
+    if (!hydratedRef.current) { hydratedRef.current = true; return; }
     saveMessages(messages);
   }, [messages]);
 

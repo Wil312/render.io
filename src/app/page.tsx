@@ -21,10 +21,18 @@ function loadWidth(): number {
 export default function Home() {
   const { messages, streaming, currentCode, send, stop, reset } = useGenerate();
 
-  const [promptWidth, setPromptWidth] = useState<number>(loadWidth);
+  // Always start at DEFAULT_WIDTH so server and client render identically.
+  // Restore the persisted width after hydration.
+  const [promptWidth, setPromptWidth] = useState<number>(DEFAULT_WIDTH);
 
-  // Persist width whenever it changes
   useEffect(() => {
+    setPromptWidth(loadWidth());
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Persist width whenever it changes (skip the initial default-value render)
+  const mountedRef = useRef(false);
+  useEffect(() => {
+    if (!mountedRef.current) { mountedRef.current = true; return; }
     try {
       localStorage.setItem(PROMPT_WIDTH_KEY, String(promptWidth));
     } catch {
